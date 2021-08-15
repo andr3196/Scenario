@@ -12,6 +12,6 @@ namespace Scenario.Services
 
         Task<ScenarioCreateResult> Create(ScenarioCreateDto scenarioCreate, CancellationToken cancellationToken);
 
-        Task Delete(string Id, CancellationToken cancellationToken);
+        Task Delete(long Id, CancellationToken cancellationToken);
     }
 }

@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Scenario.Application;
 using Scenario.Services;
 
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace Scenario.Controllers
 {
     [ApiController]
@@ -38,7 +36,7 @@ namespace Scenario.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateRule(string id, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateRule(long id, CancellationToken cancellationToken)
         {
             await scenarioService.Delete(id, cancellationToken);
             return Ok();

@@ -1,19 +1,22 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using Scenario.Domain.Modeling;
+using Scenario.Domain.Modeling.Models;
+using Scenario.Domain.Modeling.Services;
 
 namespace Scenario.Services
 {
     public class ScenarioModelService: IScenarioModelService
     {
-        public ScenarioModelService()
+        private readonly IScenarioDomainService scenarioDomainService;
+
+        public ScenarioModelService(IScenarioDomainService scenarioDomainService)
         {
+            this.scenarioDomainService = scenarioDomainService;
         }
 
-        public Task<Node> GetModel(CancellationToken cancellationToken)
+        public ScenarioSetup GetModel()
         {
-            return Task.FromResult(new Node());
+            return scenarioDomainService.GetScenarioSetup();
         }
     }
 }
