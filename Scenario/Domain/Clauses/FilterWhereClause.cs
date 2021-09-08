@@ -12,9 +12,5 @@ namespace Scenario.Domain.Clauses
         public string Operator { get; set; }
 
         public abstract string Discriminator { get; }
-
-        public IList<IFilter>? AvailableFilters { get; set; }
-
-        public abstract Expression<Func<object, bool>> GetPredicateExpression(ParameterExpression parameter);
     }
 }

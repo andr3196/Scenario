@@ -36,5 +36,17 @@ namespace Project.Domain
         {
             Raise(new PasswordChangedEvent(this));
         }
+
+        [ScenarioEvent(typeof(CreatedEvent<Customer>))]
+        public override void Created()
+        {
+            Raise(new CreatedEvent<Customer>(this));
+        }
+
+        [ScenarioEvent(typeof(CreatedEvent<Customer>))]
+        public override void Updated()
+        {
+            Raise(new UpdatedEvent<Customer>(this));
+        }
     }
 }

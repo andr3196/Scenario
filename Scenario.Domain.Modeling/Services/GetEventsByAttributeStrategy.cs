@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Scenario.Domain.Modeling.Attributes;
 using Scenario.Domain.Modeling.Models;
+using Scenario.Domain.SharedTypes;
 
 namespace Scenario.Domain.Modeling.Services
 {
     public class GetEventsByAttributeStrategy : IGetEventsStrategy
     {
         private const string EventType = "event";
-        public GetEventsByAttributeStrategy()
+        private readonly IDomainTypeResolver domainTypeResolver;
+
+        public GetEventsByAttributeStrategy(IDomainTypeResolver domainTypeResolver)
         {
+            this.domainTypeResolver = domainTypeResolver;
         }
 
         public IEnumerable<Event> GetEvents(Type type)
@@ -29,7 +33,7 @@ namespace Scenario.Domain.Modeling.Services
                 .Select(m => new Event
                 {
                     Label = m.Attribute.Label ?? m.Method.Name,
-                    Value = m.Attribute.EventType.FullName,
+                    Value = domainTypeResolver.GetKey(m.Attribute.EventType),
                     Type = EventType,
                 });
         }

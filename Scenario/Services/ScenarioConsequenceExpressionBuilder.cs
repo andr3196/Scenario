@@ -8,58 +8,72 @@ using Microsoft.Extensions.DependencyInjection;
 using Scenario.Application;
 using Scenario.Domain.Clauses;
 using Scenario.Domain.ScenarioDefinitions;
+using Scenario.Domain.SharedTypes;
+using Scenario.Services.ExpressionBuilding;
+
 namespace Scenario.Services
 {
     public class ScenarioConsequenceExpressionBuilder : IScenarioConsequenceExpressionBuilder
     {
         private readonly IServiceProvider serviceProvider;
+        private readonly IValueClauseExpressionBuilder valueClauseExpressionBuilder;
+        private readonly IDomainTypeResolver domainTypeResolver;
 
-        public ScenarioConsequenceExpressionBuilder(IServiceProvider serviceProvider)
+        public ScenarioConsequenceExpressionBuilder(
+            IServiceProvider serviceProvider,
+            IValueClauseExpressionBuilder valueClauseExpressionBuilder,
+            IDomainTypeResolver domainTypeResolver)
         {
             this.serviceProvider = serviceProvider;
+            this.valueClauseExpressionBuilder = valueClauseExpressionBuilder;
+            this.domainTypeResolver = domainTypeResolver;
         }
 
-        public Expression<ScenarioEventHandlerAsync> BuildExpression(ScenarioConsequence consequenceDto, Domain.Modeling.Models.ScenarioSetup model)
+        public Expression<Func<TInput, CancellationToken, Task>> BuildExpression<TInput>(ScenarioConsequence consequenceDto, Domain.Modeling.Models.ScenarioSetup model)
         {
-            var consequenceModel = model.Consequences.SingleOrDefault(c => c.Value == consequenceDto.Key);
+            var consequenceModel = model.Consequences.SingleOrDefault(c => c.Value == consequenceDto.Key)
+                ?? throw new ArgumentException("Consequence key not recognized.");
 
-            var parametersType = Type.GetType(consequenceDto.ParametersType, throwOnError: true);
+            var parametersType = domainTypeResolver.ResolveTypeFromKey(consequenceDto.ParametersType)
+                ?? throw new ArgumentException("Parameter type not recognized.");
 
-            var payloadParameter = Expression.Parameter(parametersType);
-            var cancellationTokenParameter = Expression.Parameter(typeof(CancellationToken));
-
-            var handlerType = Type.GetType(consequenceModel.HandlerType, throwOnError: true);
+            var handlerType = domainTypeResolver.ResolveTypeFromKey(consequenceModel.HandlerType)
+                ?? throw new ArgumentException("HandlerType type not recognized.");
             var handler = serviceProvider.GetRequiredService(handlerType);
 
-            var commandType = Type.GetType(consequenceModel.ParameterType, throwOnError: true);
+            var commandType = domainTypeResolver.ResolveTypeFromKey(consequenceModel.CommandType)
+                ?? throw new ArgumentException("command type not recognized.");
 
-            var commandGenerator = GetCommandGeneratorExpression(payloadParameter, commandType, consequenceDto.Parameters);
-            Expression<Func<object, CancellationToken, Task>> handlerInvocation = (input, token) => (Task)handlerType.InvokeMember("HandleAsync", System.Reflection.BindingFlags.Default, null, handler, new object[] { input, token });
+            var payloadParameter = Expression.Parameter(typeof(TInput));
+            var cancellationTokenParameter = Expression.Parameter(typeof(CancellationToken));
 
-            var command = Expression.Parameter(typeof(int), "command");
-            var result = Expression.Parameter(typeof(int), "result");
+            var commandGenerator = GetCommandGeneratorExpression<TInput>(payloadParameter, commandType, consequenceDto.Parameters);
+            var handleMethod = handlerType.GetMethod("HandleAsync");
+
+            var command = Expression.Parameter(commandType, "command");
+            var result = Expression.Parameter(typeof(Task), "result");
 
             var body = Expression.Block(
-                new[] { command },
-                Expression.Assign(command, Expression.Invoke(commandGenerator, new[] { payloadParameter })),
-                Expression.Assign(result, Expression.Invoke(handlerInvocation, new[] { command, cancellationTokenParameter }))
+                new[] { command, result },
+                Expression.Assign(command, Expression.Convert(Expression.Invoke(commandGenerator, new[] { payloadParameter }), commandType)),
+                Expression.Assign(result, Expression.Convert(Expression.Call(Expression.Constant(handler), handleMethod, new[] { command, cancellationTokenParameter }), typeof(Task)))
                 );
 
-            return Expression.Lambda<ScenarioEventHandlerAsync>(body, new ParameterExpression[] { payloadParameter, cancellationTokenParameter });
+            return Expression.Lambda<Func<TInput, CancellationToken, Task>>(body, new ParameterExpression[] { payloadParameter, cancellationTokenParameter });
         }
 
-        protected Expression<Func<object, object>> GetCommandGeneratorExpression(ParameterExpression parameter, Type commandType, Dictionary<string, ValueWhereClause> Parameters)
+        protected Expression<Func<TInput, object>> GetCommandGeneratorExpression<TInput>(ParameterExpression parameter, Type commandType, Dictionary<string, ValueWhereClause> Parameters)
         {
 
             var newCommand = Expression.New(commandType);
 
-            var commandMembers = commandType.GetMembers();
+            var commandMembers = commandType.GetProperties();
 
             var valueExpressionsMap = Parameters
                 .Select(keyVal => new
                 {
                     MemberName = keyVal.Key,
-                    Expression = keyVal.Value.GetExpression(parameter)
+                    Expression = valueClauseExpressionBuilder.GetExpression(keyVal.Value, parameter)
                 })
                 .ToDictionary(
                     x => x.MemberName,
@@ -75,7 +89,7 @@ namespace Scenario.Services
                     newCommand,
                     memberBindings);
 
-            return Expression.Lambda<Func<object, object>>(memberInitExpression, parameter);
+            return Expression.Lambda<Func<TInput, object>>(memberInitExpression, parameter);
         }
     }
 }

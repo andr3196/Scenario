@@ -12,6 +12,7 @@ using Scenario.Domain;
 using Scenario.Domain.ScenarioDefinitions;
 using Scenario.Domain.SharedTypes;
 using Scenario.Infrastructure;
+using Scenario.Serialization;
 
 namespace Scenario.Services
 {
@@ -21,23 +22,30 @@ namespace Scenario.Services
         private readonly List<Task> ongoingTasks = new List<Task>();
         private readonly IDatabaseContext databaseContext;
         private readonly IScenarioParsingService scenarioParsingService;
+        private readonly ISerializationService serializationService;
+        private readonly IDomainTypeResolver domainTypeResolver;
 
         public ScenarioEventService(
             IDatabaseContext databaseContext,
-            IScenarioParsingService scenarioParsingService)
+            IScenarioParsingService scenarioParsingService,
+            ISerializationService serializationService,
+            IDomainTypeResolver domainTypeResolver)
         {
             this.databaseContext = databaseContext;
             this.scenarioParsingService = scenarioParsingService;
+            this.serializationService = serializationService;
+            this.domainTypeResolver = domainTypeResolver;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            Console.WriteLine("Started event service");
             var definitions = (await databaseContext.Set<Domain.Scenarios.Scenario>()
                 .Where(s => s.Active)
                 .ToListAsync(cancellationToken))
                 .Select(s =>
                 {
-                    var scenarioDefinitionDto = JsonSerializer.Deserialize<ScenarioDefinitionDto>(s.Description);
+                    var scenarioDefinitionDto = serializationService.Deserialize<ScenarioDefinitionDto>(s.Description);
                     scenarioParsingService.TryParse(scenarioDefinitionDto, out var scenarioDefinition);
                     return scenarioDefinition;
                 })
@@ -68,17 +76,18 @@ namespace Scenario.Services
             where TEntity : class, IScenarioEntity
         {
             var eventType = @event.GetType();
-            if (definitionsState.ContainsKey(eventType.FullName))
+            var key = domainTypeResolver.GetKey(eventType);
+            if (definitionsState.ContainsKey(key))
             {
-                var potentialScenarios = definitionsState[eventType.FullName];
+                var potentialScenarios = definitionsState[key];
                 var tasks = potentialScenarios
                     .Select(s => new
                     {
                         Scenario = s,
                         Data = @event.Entity
                     })
-                    .Where(x => x.Scenario.Condition(x.Data))
-                    .Select(async x => await x.Scenario.Handler(x.Data, cancellationToken))
+                    .Where(x => x.Scenario.InvokeCondition(x.Data))
+                    .Select(async x => await x.Scenario.InvokeConsequence(x.Data, cancellationToken))
                     .Select(task => { ongoingTasks.Add(task); return task; })
                     .ToList();
                 var handleAllEventsTask =  Task.WhenAll(tasks);

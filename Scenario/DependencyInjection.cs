@@ -12,6 +12,7 @@ using Scenario.Domain.SharedTypes;
 using Scenario.Infrastructure;
 using Scenario.Serialization;
 using Scenario.Services;
+using Scenario.Services.ExpressionBuilding;
 
 namespace Scenario
 {
@@ -20,25 +21,28 @@ namespace Scenario
         public static IServiceCollection AddScenario(this IServiceCollection services, Assembly domainAssembly)
         {
             services.AddControllers();
-            services.AddScenarioModelling(domainAssembly);
-            services.AddTransient<IScenarioModelService, ScenarioModelService>();
-            services.AddTransient<IDatabaseContext, DatabaseContext>();
-            services.AddTransient<DatabaseContext, DatabaseContext>();
+            services
+                .AddScenarioModelling(domainAssembly)
+                .AddTransient<IScenarioModelService, ScenarioModelService>()
+                .AddTransient<IDatabaseContext, DatabaseContext>()
+                .AddTransient<DatabaseContext, DatabaseContext>();
 
             using (var scope = services.BuildServiceProvider().CreateScope())
             {
                 EnsureDatabaseReady(scope.ServiceProvider);
             }
 
-            services.AddTransient<IScenarioService, ScenarioService>();
-            services.AddTransient<IScenarioConsequenceExpressionBuilder, ScenarioConsequenceExpressionBuilder>();
-            services.AddTransient<IScenarioParsingService, ScenarioParsingService>();
-            services.AddHostedService<ScenarioEventService>();
-            services.AddSingleton<IScenarioEventService, ScenarioEventService>();
-            services.AddTransient<IScenarioEventPropagator, ScenarioEventPropagator>();
-            services.AddSingleton<SingletonCacheService>();
-            services.AddDelegates();
-            return services;
+            return services
+                .AddTransient<IScenarioService, ScenarioService>()
+                .AddTransient<IScenarioConsequenceExpressionBuilder, ScenarioConsequenceExpressionBuilder>()
+                .AddTransient<IScenarioParsingService, ScenarioParsingService>()
+                .AddHostedService<ScenarioEventService>()
+                .AddSingleton<IScenarioEventService, ScenarioEventService>()
+                .AddTransient<IScenarioEventPropagator, ScenarioEventPropagator>()
+                .AddSingleton<SingletonCacheService>()
+                .AddTransient<ISerializationService, SerializationService>()
+                .AddDelegates()
+                .AddExpressionBuilding(domainAssembly);
         }
 
         public static IApplicationBuilder UseScenario(this IApplicationBuilder app)

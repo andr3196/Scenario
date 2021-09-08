@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Scenario.Application;
-using Scenario.Domain.ScenarioDefinitions;
 
 namespace Scenario.Services
 {
     public interface IScenarioConsequenceExpressionBuilder
     {
-        Expression<ScenarioEventHandlerAsync> BuildExpression(ScenarioConsequence consequenceDto, Domain.Modeling.Models.ScenarioSetup model);
+        Expression<Func<TInput, CancellationToken, Task>> BuildExpression<TInput>(ScenarioConsequence consequenceDto, Domain.Modeling.Models.ScenarioSetup model);
     }
 }

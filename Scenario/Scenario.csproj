@@ -28,6 +28,8 @@
     <Folder Include="ErrorHandling\" />
     <Folder Include="Serialization\" />
     <Folder Include="Serialization\Extensions\" />
+    <Folder Include="Services\ExpressionBuilding\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj">
@@ -43,5 +45,7 @@
     <None Remove="ErrorHandling\" />
     <None Remove="Serialization\" />
     <None Remove="Serialization\Extensions\" />
+    <None Remove="Services\ExpressionBuilding\" />
+    <None Remove="Extensions\" />
   </ItemGroup>
 </Project>

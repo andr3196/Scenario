@@ -12,11 +12,12 @@ namespace Scenario.Infrastructure
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite(@"Data Source=/tmp/scenario.db", x => x.MigrationsAssembly(GetType().Assembly.FullName));
+            => options.UseSqlite(@"Data Source=/tmp/scenario4.db", x => x.MigrationsAssembly(GetType().Assembly.FullName));
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Domain.Scenarios.Scenario>().ToTable(nameof(Domain.Scenarios.Scenario));
+            modelBuilder.Entity<Domain.Scenarios.Scenario>()
+                .ToTable(nameof(Domain.Scenarios.Scenario));
         }
 
         Task IDatabaseContext.SaveChangesAsync(CancellationToken cancellationToken)

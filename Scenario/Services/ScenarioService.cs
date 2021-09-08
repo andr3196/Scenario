@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Scenario.Application;
 using Scenario.Infrastructure;
+using Scenario.Serialization;
 
 namespace Scenario.Services
 {
@@ -15,33 +16,44 @@ namespace Scenario.Services
     {
         private readonly IDatabaseContext databaseContext;
         private readonly IScenarioParsingService scenarioParsingService;
+        private readonly IScenarioEventService scenarioEventService;
+        private readonly ISerializationService serializationService;
 
-        public ScenarioService(IDatabaseContext databaseContext, IScenarioParsingService scenarioParsingService)
+        public ScenarioService(
+            IDatabaseContext databaseContext,
+            IScenarioParsingService scenarioParsingService,
+            IScenarioEventService scenarioEventService,
+            ISerializationService serializationService)
         {
             this.databaseContext = databaseContext;
             this.scenarioParsingService = scenarioParsingService;
+            this.scenarioEventService = scenarioEventService;
+            this.serializationService = serializationService;
         }
 
         public async Task<ScenarioCreateResult> Create(ScenarioCreateDto scenarioCreate, CancellationToken cancellationToken)
         {
-            var isValid = scenarioParsingService.TryParse(scenarioCreate.Scenario, out var scenarioDefinition);
+            var isValid = scenarioParsingService.TryParse(scenarioCreate.Scenario, out var scenarioDefinition, out var parsingException);
             if (!isValid)
             {
-                throw new ArgumentException("The scenario is invalid.");
+                throw parsingException!;
             }
+
+            var description = serializationService.Serialize(scenarioCreate.Scenario);
 
             var scenario = new Domain.Scenarios.Scenario
             {
                 Active = true,
                 Created = DateTime.Now,
-                Description = JsonSerializer.Serialize(scenarioCreate.Scenario),
+                Description = description,
                 Title = scenarioCreate.Title,
             };
 
             databaseContext.Set<Domain.Scenarios.Scenario>().Add(scenario);
 
             await databaseContext.SaveChangesAsync(cancellationToken);
-            
+
+            scenarioEventService.Register(scenarioDefinition!);
 
             return new ScenarioCreateResult
             (

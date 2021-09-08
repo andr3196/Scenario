@@ -24,17 +24,20 @@ namespace Scenario.Domain.Modeling.Services
         private readonly AssemblyProvider assemblyProvider;
         private readonly IGetEventsStrategy getEventsStrategy;
         private readonly ITranslationService translationService;
+        private readonly IDomainTypeResolver domainTypeResolver;
 
         public ScenarioDomainService(
             IServiceProvider serviceProvider,
             AssemblyProvider assemblyProvider,
             IGetEventsStrategy getEventsStrategy,
-            ITranslationService translationService)
+            ITranslationService translationService,
+            IDomainTypeResolver domainTypeResolver)
         {
             this.serviceProvider = serviceProvider;
             this.assemblyProvider = assemblyProvider;
             this.getEventsStrategy = getEventsStrategy;
             this.translationService = translationService;
+            this.domainTypeResolver = domainTypeResolver;
         }
 
         public ScenarioSetup GetScenarioSetup()
@@ -59,7 +62,7 @@ namespace Scenario.Domain.Modeling.Services
                 {
                     Label = x.Attribute.Label ?? x.EntityType.Name,
                     Type = EntityType,
-                    Value = x.EntityType.FullName,
+                    Value = domainTypeResolver.GetKey(x.EntityType),
                     Properties = x.EntityType
                         .GetProperties()
                         .Where(p => !p.GetCustomAttributes(true).OfType<ScenarioIgnore>().Any())
@@ -73,7 +76,7 @@ namespace Scenario.Domain.Modeling.Services
                 })
                 .ToList();
             var eventsDictionary = entitiesTypes.ToDictionary(
-                e => e.EntityType.Name,
+                e => domainTypeResolver.GetKey(e.EntityType),
                 e => getEventsStrategy.GetEvents(e.EntityType));
 
             var consequences = assembly
@@ -88,8 +91,9 @@ namespace Scenario.Domain.Modeling.Services
                 {
                     Label = x.Attribute.Label,
                     Type = ConsequenceType,
-                    Value = x.HandlerType.AssemblyQualifiedName,
-                    ParameterType = x.Attribute.ParametersType.FullName,
+                    Value = domainTypeResolver.GetKey(x.HandlerType),
+                    CommandType = domainTypeResolver.GetKey(x.Attribute.ParametersType),
+                    HandlerType = domainTypeResolver.GetKey(x.HandlerType),
                     Parameters = x.Attribute.ParametersType
                         .GetProperties()
                         .Where(p => !p.GetCustomAttributes(true).OfType<ScenarioIgnore>().Any())
@@ -97,7 +101,7 @@ namespace Scenario.Domain.Modeling.Services
                         {
                             Label = p.Name,
                             Type = ParameterType,
-                            Value = p.Name,
+                            Value = domainTypeResolver.GetKey(p.PropertyType),
                         })
                         .ToList(),
                 })

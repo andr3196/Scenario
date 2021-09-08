@@ -28,14 +28,19 @@ namespace Scenario.Serialization
                 _ => throw new JsonException()
             };
             var predicate = JsonSerializer.Deserialize(ref reader, type, options) ?? throw new JsonException();
-            var node = new RootNodeWhereClause((IPredicateWhereClause)predicate);
-            return node;
+            return new RootNodeWhereClause
+            {
+                Value = predicate as IPredicateWhereClause ?? throw new JsonException(),
+            };
         }
 
 
         public override void Write(Utf8JsonWriter writer, RootNodeWhereClause value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStartObject();
+            writer.WritePropertyName(nameof(value.Value));
+            JsonSerializer.Serialize(writer, value.Value, options);
+            writer.WriteEndObject();
         }
     }
 }
