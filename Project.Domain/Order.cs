@@ -27,5 +27,17 @@ namespace Project.Domain
         {
             Raise(new OrderCompletedEvent(this));
         }
+
+        [ScenarioEvent(typeof(CreatedEvent<Order>))]
+        public override void Created()
+        {
+            Raise(new CreatedEvent<Order>(this));
+        }
+
+        [ScenarioEvent(typeof(CreatedEvent<Order>))]
+        public override void Updated()
+        {
+            Raise(new UpdatedEvent<Order>(this));
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace Project.Api.Persistence
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite(@"Data Source=/tmp/example-project.db");
+            => options.UseSqlite(@"Data Source=/Users/andreas/Dropbox/Andreas/Programming/Scenario/Scenario/Project.Api/example-project2.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -66,8 +66,7 @@ namespace Project.Api.Persistence
             var entitiesWithEvents = ChangeTracker
                 .Entries<Entity>()
                 .Where(e =>
-                    e.State != EntityState.Detached
-                    && e.Entity.Events.Any())
+                    e.State != EntityState.Detached)
                 .Select(e => e.Entity);
 
             var result = base.SaveChanges();

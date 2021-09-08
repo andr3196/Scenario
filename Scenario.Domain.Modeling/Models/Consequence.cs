@@ -9,7 +9,7 @@ namespace Scenario.Domain.Modeling.Models
         {
         }
 
-        public string ParameterType { get; set; }
+        public string CommandType { get; set; }
 
         public string HandlerType { get; set; }
 

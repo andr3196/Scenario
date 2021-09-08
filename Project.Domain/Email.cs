@@ -16,5 +16,17 @@ namespace Project.Domain
         {
             Raise(new EmailSentEvent(this));
         }
+
+        [ScenarioEvent(typeof(CreatedEvent<Email>))]
+        public override void Created()
+        {
+            Raise(new CreatedEvent<Email>(this));
+        }
+
+        [ScenarioEvent(typeof(CreatedEvent<Email>))]
+        public override void Updated()
+        {
+            Raise(new UpdatedEvent<Email>(this));
+        }
     }
 }

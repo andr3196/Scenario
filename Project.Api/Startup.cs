@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Project.Api.Persistence;
+using Project.Domain.Handlers;
 using Scenario;
 using Scenario.Domain.Modeling.Models.Filters;
 using Scenario.Serialization;
@@ -38,14 +39,13 @@ namespace Project.Api
 
             services.AddScenarioProject();
 
-            var filters = services.BuildServiceProvider().GetServices<IFilter>();
-
             services.AddControllers()
                 .AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.Converters.Add(new FilterWhereClauseConverter(filters));
+                options.JsonSerializerOptions.Converters.Add(new PredicateWhereClauseConverter());
             });
             services.AddDbContext<DatabaseContext>();
+            services.AddTransient<SendEmailHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -27,5 +27,17 @@ namespace Project.Domain
         {
             Raise(new ItemOutOfStockEvent(this));
         }
+
+        [ScenarioEvent(typeof(CreatedEvent<Item>))]
+        public override void Created()
+        {
+            Raise(new CreatedEvent<Item>(this));
+        }
+
+        [ScenarioEvent(typeof(CreatedEvent<Item>))]
+        public override void Updated()
+        {
+            Raise(new UpdatedEvent<Item>(this));
+        }
     }
 }

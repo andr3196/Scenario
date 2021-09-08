@@ -25,19 +25,34 @@ namespace Project.Api.Controllers
         [Route("raise/{type}")]
         public IActionResult Raise(string type, CancellationToken cancellationToken)
         {
-            var customer = databaseContext.Set<Customer>().SingleOrDefault();
-            if(customer == null)
+            if (type == "AccountCreated")
             {
-                customer = new Customer
+                var customer = databaseContext.Set<Customer>().SingleOrDefault();
+                if (customer == null)
                 {
-                    Name = "Customer 1",
-                    Password = "MySecret"
-                };
-                databaseContext.Set<Customer>().Add(customer);
-                databaseContext.SaveChanges();
-            }
+                    customer = new Customer
+                    {
+                        Name = "Customer 1",
+                        Password = "MySecret"
+                    };
+                    databaseContext.Set<Customer>().Add(customer);
+                    databaseContext.SaveChanges();
+                }
 
-            customer.AccountCreated();
+                customer.AccountCreated();
+            }
+            if( type == "ItemCreated")
+            {
+                var items = databaseContext.Set<Item>().ToList();
+                var item = new Item
+                {
+                    Price = 23,
+                    Stock = 50 -  items.Count,
+                    Title = "Nice item",
+                };
+                databaseContext.Set<Item>().Add(item);
+            }
+            
             databaseContext.SaveChanges();
 
             return Ok();

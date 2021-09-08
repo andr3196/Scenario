@@ -19,22 +19,18 @@ namespace Scenario.Serialization
 
         public override FilterWhereClause Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            Utf8JsonReader readerClone = reader;
-
             var discriminator = reader.GetStringProperty("discriminator");
             if (discriminator == null)
             {
                 throw new JsonException();
             }
 
-            FilterWhereClause clause = discriminator switch
+            return (FilterWhereClause?)(discriminator switch
             {
-                nameof(UnaryFilterWhereClause) => new UnaryFilterWhereClause(),
-                nameof(BinaryFilterWhereClause) => new BinaryFilterWhereClause(filters),
+                nameof(UnaryFilterWhereClause) => JsonSerializer.Deserialize<UnaryFilterWhereClause>(ref reader, options),
+                nameof(BinaryFilterWhereClause) => JsonSerializer.Deserialize<BinaryFilterWhereClause>(ref reader, options),
                 _ => throw new NotSupportedException()
-            };
-
-            return (FilterWhereClause)(JsonSerializer.Deserialize(ref reader, clause.GetType()) ?? throw new JsonException());
+            }) ?? throw new JsonException();
         }
 
         public override void Write(Utf8JsonWriter writer, FilterWhereClause value, JsonSerializerOptions options)

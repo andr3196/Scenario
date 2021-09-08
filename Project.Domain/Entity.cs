@@ -6,27 +6,17 @@ using Scenario.Domain.SharedTypes;
 
 namespace Project.Domain
 {
-    public class Entity : IScenarioEntity
+    public abstract class Entity : IScenarioEntity
     {
         public ICollection<IDomainEvent> Events { get; } = new List<IDomainEvent>();
 
-        public Entity()
-        {
-        }
-
         public long Id { get; set; }
 
-        [ScenarioEvent(typeof(CreatedEvent<>))]
-        public void Created()
-        {
-            Raise(new CreatedEvent<Entity>(this));
-        }
+        //[ScenarioEvent(typeof(CreatedEvent<>))]
+        public abstract void Created();
 
-        [ScenarioEvent(typeof(CreatedEvent<>))]
-        public void Updated()
-        {
-            Raise(new UpdatedEvent<Entity>(this));
-        }
+        //[ScenarioEvent(typeof(CreatedEvent<>))]
+        public abstract void Updated();
 
         protected void Raise(IDomainEvent domainEvent)
         {
