@@ -1,7 +1,6 @@
-﻿using System;
-namespace Scenario.Domain
+﻿namespace Scenario.Domain
 {
-    public interface ISerializationService
+    public interface IScenarioSerializer
     {
         string Serialize<TType>(TType type);
 

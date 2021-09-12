@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Scenario.Application;
+using Scenario.Domain;
 using Scenario.Infrastructure;
 using Scenario.Serialization;
 

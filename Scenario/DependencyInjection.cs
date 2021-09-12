@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
+using Scenario.Domain;
 using Scenario.Domain.Modeling;
 using Scenario.Domain.SharedTypes;
 using Scenario.Infrastructure;

@@ -1,5 +1,4 @@
 ﻿using System;
-using Scenario.Domain.SharedTypes;
 
 namespace Scenario.Domain.Modeling.Attributes
 {

@@ -8,10 +8,6 @@ namespace Scenario.Serialization
 {
     public class RootWhereClauseConverter : JsonConverter<RootNodeWhereClause>
     {
-        public RootWhereClauseConverter()
-        {
-        }
-
         public override RootNodeWhereClause Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var discriminator = reader.GetStringProperty("discriminator");
