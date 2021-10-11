@@ -12,22 +12,6 @@ namespace Scenario.Test.Serialization
     public class SerializationTests
     {
         [Fact]
-        public void ShouldSerializeRootClause()
-        {
-            var serializer = new RootClauseConverter();
-            var buffer = new ArrayBufferWriter<byte>(100);
-            var writer = new Utf8JsonWriter(buffer);
-            var root = new RootClause(null);
-
-            serializer.Write(writer, root, new JsonSerializerOptions());
-            writer.Flush();
-
-            var expectedOutPut = "{\"Value\":null}";
-            var result = Encoding.Default.GetString(buffer.WrittenSpan);
-            Assert.Equal(expectedOutPut, result);
-        }
-
-        [Fact]
         public void ShouldSerializeNullPredicateClause()
         {
             var serializer = new PredicateClauseConverter();

@@ -9,8 +9,7 @@ namespace Scenario.Domain
 
         public ScenarioSerializer()
         {
-            jsonSerializerOptions.Converters.Add(new RootClauseConverter());
-            //jsonSerializerOptions.Converters.Add(new PredicateWhereClauseConverter());
+            jsonSerializerOptions.Converters.Add(new PredicateClauseConverter());
             jsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
         }
 
