@@ -10,18 +10,18 @@
   <ItemGroup>
     <None Remove="Serialization\" />
     <None Remove="JsonConvertion\" />
-    <None Remove="Clauses\" />
     <None Remove="JsonConvertion\Extensions\" />
     <None Remove="Extensions\" />
     <None Remove="TypeHandling\" />
+    <None Remove="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialization\" />
     <Folder Include="JsonConvertion\" />
-    <Folder Include="Clauses\" />
     <Folder Include="JsonConvertion\Extensions\" />
     <Folder Include="Extensions\" />
     <Folder Include="TypeHandling\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\Scenario.Domain.Shared\Scenario.Domain.Shared.csproj" />

@@ -5,6 +5,10 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
@@ -25,11 +29,19 @@
     <None Remove="TypeHandling\" />
     <None Remove="Moq" />
     <None Remove="TypeHandling\Mocks\" />
+    <None Remove="Services\" />
+    <None Remove="Services\ExpressionBuilding\" />
+    <None Remove="Services\ExpressionBuilding\Mocks\" />
+    <None Remove="Services\ExpressionBuilding\Mocks\Filters\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialization\" />
     <Folder Include="TypeHandling\" />
     <Folder Include="TypeHandling\Mocks\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\ExpressionBuilding\" />
+    <Folder Include="Services\ExpressionBuilding\Mocks\" />
+    <Folder Include="Services\ExpressionBuilding\Mocks\Filters\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Scenario.Domain\Scenario.Domain.csproj" />

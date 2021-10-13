@@ -49,7 +49,7 @@ namespace Scenario.Test.Serialization
             var serializer = new PredicateClauseConverter();
             var buffer = new ArrayBufferWriter<byte>(100);
             var writer = new Utf8JsonWriter(buffer);
-            IPredicateClause predicate = new BinaryPredicateClause("combinator", null, null);
+            IPredicateClause predicate = new BinaryPredicateClause(null, null, "combinator");
 
             serializer.Write(writer, predicate, new JsonSerializerOptions());
             writer.Flush();

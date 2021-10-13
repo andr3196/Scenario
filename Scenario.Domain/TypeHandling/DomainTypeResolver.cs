@@ -50,14 +50,10 @@ namespace Scenario.Domain.TypeHandling
                                 | BindingFlags.FlattenHierarchy)
                             .Where(m => Attribute.IsDefined(m, typeof(ScenarioEventAttribute)))
                             .Select(m => m.GetCustomAttributes(true).OfType<ScenarioEventAttribute>().First().EventType)))
-                .Distinct()
-                .OrderBy(v => v.Name)
-                .ToList();
+                    .Distinct()
+                    .OrderBy(v => v.Name)
+                    .ToList();
             x.ForEach(t => typeDictionary.Add(GenerateKey(t), t));
-            foreach (var (key, val) in this.typeDictionary.OrderBy(p => p.Value.Name))
-            {
-                Console.WriteLine($"Key: {key}, Val: {val}");
-            }
        } 
 
         public string GenerateKey(Type type)

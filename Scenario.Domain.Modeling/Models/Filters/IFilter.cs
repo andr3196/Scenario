@@ -3,6 +3,13 @@ using System.Collections.Generic;
 
 namespace Scenario.Domain.Modeling.Models.Filters
 {
+    public interface IFilter<T1> : IFilter
+    {
+        public bool Compare(T1 t1, string comparisonType);
+
+        public IDictionary<string, Func<T1, bool>> SupportedComparisons { get; }
+    }
+
     public interface IFilter<T1,T2> : IFilter
     {
         public bool Compare(T1 t1, T2 t2, string comparisonType);
