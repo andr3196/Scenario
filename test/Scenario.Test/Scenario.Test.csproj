@@ -33,6 +33,7 @@
     <None Remove="Services\ExpressionBuilding\" />
     <None Remove="Services\ExpressionBuilding\Mocks\" />
     <None Remove="Services\ExpressionBuilding\Mocks\Filters\" />
+    <None Remove="Services\ScenarioManagement\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Serialization\" />
@@ -42,6 +43,7 @@
     <Folder Include="Services\ExpressionBuilding\" />
     <Folder Include="Services\ExpressionBuilding\Mocks\" />
     <Folder Include="Services\ExpressionBuilding\Mocks\Filters\" />
+    <Folder Include="Services\ScenarioManagement\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Scenario.Domain\Scenario.Domain.csproj" />

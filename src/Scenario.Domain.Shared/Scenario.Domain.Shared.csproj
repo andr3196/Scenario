@@ -11,9 +11,11 @@
   <ItemGroup>
     <None Remove="TypeHandling\" />
     <None Remove="Contracts\" />
+    <None Remove="Events\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TypeHandling\" />
     <Folder Include="Contracts\" />
+    <Folder Include="Events\" />
   </ItemGroup>
 </Project>
