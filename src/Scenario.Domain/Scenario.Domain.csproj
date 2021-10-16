@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+      <LangVersion>9.0</LangVersion>
+      <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Serialization\" />
+    <None Remove="JsonConvertion\" />
+    <None Remove="JsonConvertion\Extensions\" />
+    <None Remove="Extensions\" />
+    <None Remove="TypeHandling\" />
+    <None Remove="Exceptions\" />
+    <None Remove="Services\ScenarioManagement\" />
+    <None Remove="Services\EventHandling\" />
+    <None Remove="Models\Scenarios\" />
+    <None Remove="Services\Persistence\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Serialization\" />
+    <Folder Include="JsonConvertion\" />
+    <Folder Include="JsonConvertion\Extensions\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="TypeHandling\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Services\ScenarioManagement\" />
+    <Folder Include="Services\EventHandling\" />
+    <Folder Include="Models\Scenarios\" />
+    <Folder Include="Services\Persistence\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj" />
+    <ProjectReference Include="..\Scenario.Domain.Shared\Scenario.Domain.Shared.csproj" />
+  </ItemGroup>
+</Project>

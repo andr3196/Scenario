@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>Scenario.Server</PackageId>
+    <PackageVersion>0.9.0</PackageVersion>
+    <Authors>Andreas Springborg</Authors>
+    <NeutralLanguage>en</NeutralLanguage>
+    <Owners>Andreas Springborg</Owners>
+    <PackageProjectUrl>https://github.com/andr3196/Scenario</PackageProjectUrl>
+    <Summary>Adds support for client side runtime definition</Summary>
+    <PackageTags>Under Developement</PackageTags>
+    <Title>Scenario</Title>
+    <Description>Scenario is a ASP.NET application extension that allows for client side business logic definition and management at runtime over an existing business domain. </Description>
+    <Copyright>Copyright (c) Andreas Springborg 2021</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Scenario.Persistence\Scenario.Persistence.csproj" />
+    <ProjectReference Include="..\Scenario.Api\Scenario.Api.csproj" />
+    <ProjectReference Include="..\Scenario.Domain\Scenario.Domain.csproj" />
+    <ProjectReference Include="..\Scenario.Application\Scenario.Application.csproj" />
+    <ProjectReference Include="..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj" />
+  </ItemGroup>
+</Project>
