@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Scenario.Domain.Clauses;
+using Scenario.Domain.Modeling.Models;
 using Scenario.Domain.Shared.TypeHandling;
 
 namespace Scenario.Services.ExpressionBuilding
@@ -25,7 +26,7 @@ namespace Scenario.Services.ExpressionBuilding
             this.domainTypeResolver = domainTypeResolver;
         }
 
-        public Expression<Func<TInput, CancellationToken, Task>> BuildExpression<TInput>(ConsequenceClause clause, Domain.Modeling.Models.ScenarioDomainModel model)
+        public Expression<Func<TInput, CancellationToken, Task>> BuildExpression<TInput>(ConsequenceClause clause, ScenarioDomainModel model)
         {
             var consequenceModel = model.Consequences.SingleOrDefault(c => c.Value == clause.Key)
                 ?? throw new ArgumentException("Consequence key not recognized.");

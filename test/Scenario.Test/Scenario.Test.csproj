@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -46,6 +46,6 @@
     <Folder Include="Services\ScenarioManagement\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Scenario.Domain\Scenario.Domain.csproj" />
+    <ProjectReference Include="..\..\src\Scenario.Domain\Scenario.Domain.csproj" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
+    <LangVersion>10</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,13 +13,12 @@
     <Folder Include="Handlers\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj">
-      <ReferenceSourceTarget>ProjectReference</ReferenceSourceTarget>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="Events\" />
     <None Remove="Handlers\" />
     <None Remove="Microsoft.EntityFrameworkCore.Sqlite" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj" />
+    <ProjectReference Include="..\..\src\Scenario.Domain.Shared\Scenario.Domain.Shared.csproj" />
   </ItemGroup>
 </Project>

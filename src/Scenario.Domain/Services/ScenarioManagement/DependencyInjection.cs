@@ -7,7 +7,7 @@ namespace Scenario.Domain.Services.ScenarioManagement
         public static IServiceCollection AddScenarioManagement(this IServiceCollection services)
         {
             return services
-                .AddTransient<IScenarioCreateService, ScenarioCreateService>();
+                .AddTransient<IScenarioCreator, ScenarioCreator>();
         }
     }
 }

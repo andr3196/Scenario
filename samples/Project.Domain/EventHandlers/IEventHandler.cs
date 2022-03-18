@@ -1,6 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Scenario.Domain.SharedTypes;
+﻿using System.Threading.Tasks;
+using Scenario.Domain.Shared.Events;
 
 namespace Project.Domain.EventHandlers
 {
