@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Project.Domain;
-using Scenario.Domain.SharedTypes;
 
 namespace Project.Api.Persistence
 {
     public class DatabaseContext : DbContext
     {
-        private readonly IScenarioEventPropagator scenarioEventPropagator;
-
-        public DatabaseContext(IScenarioEventPropagator scenarioEventPropagator)
+        
+        public DatabaseContext()
         {
-            this.scenarioEventPropagator = scenarioEventPropagator;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -86,7 +84,7 @@ namespace Project.Api.Persistence
 
         private async Task HandleEventsAsync(System.Collections.Generic.IEnumerable<Entity> entitiesWithEvents)
         {
-            var propagateMethod = typeof(IScenarioEventPropagator).GetMethod(nameof(IScenarioEventPropagator.PropagateAsync));
+            MethodInfo propagateMethod = null; //typeof(IScenarioEventPropagator).GetMethod(nameof(IScenarioEventPropagator.PropagateAsync));
             
             var entityEvents = entitiesWithEvents
                     .SelectMany(e => e.Events)
@@ -96,7 +94,7 @@ namespace Project.Api.Persistence
                 var eventType = @event.GetType();
                 var entityType = eventType.BaseType.GetGenericArguments().First();
                 var genericMethod = propagateMethod.MakeGenericMethod(eventType, entityType);
-                await (Task)genericMethod.Invoke(scenarioEventPropagator, new[] { @event });
+                //await (Task)genericMethod.Invoke(scenarioEventPropagator, new[] { @event });
             }
 
             entitiesWithEvents.ToList().ForEach(e => e.ResetEvents());

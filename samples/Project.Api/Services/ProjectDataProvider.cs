@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Project.Api.Persistence;
 using Project.Domain;
-using Scenario.Domain.SharedTypes;
+using Scenario.Domain.Shared.Events;
 
 namespace Scenario.Services
 {
-    public class ProjectDataProvider : IScenarioDataProvider
+    public class ProjectDataProvider
     {
         private readonly DatabaseContext databaseContext;
 

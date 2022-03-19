@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Project.Api.Persistence;
-using Project.Domain.Properties;
-using Scenario;
-using Scenario.Domain.SharedTypes;
-using Scenario.Services;
 
 namespace Project.Api
 {
@@ -14,8 +10,6 @@ namespace Project.Api
     {
         public static void AddScenarioProject(this IServiceCollection services)
         {
-            services.AddTransient<IScenarioDataProvider, ProjectDataProvider>();
-            services.AddScenario(typeof(AssemblyReference).Assembly);
         }
 
         public static IApplicationBuilder UseCurrentProject(this IApplicationBuilder app)

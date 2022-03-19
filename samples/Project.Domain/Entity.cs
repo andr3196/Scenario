@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Project.Domain.Events;
-using Scenario.Domain.Modeling.Attributes;
-using Scenario.Domain.SharedTypes;
+﻿using System.Collections.Generic;
+using Scenario.Domain.Shared.Events;
 
 namespace Project.Domain
 {

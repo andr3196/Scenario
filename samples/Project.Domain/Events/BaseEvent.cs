@@ -1,4 +1,4 @@
-﻿using Scenario.Domain.SharedTypes;
+﻿using Scenario.Domain.Shared.Events;
 
 namespace Project.Domain.Events
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using Scenario.Domain.SharedTypes;
-
-namespace Project.Domain.Events
+﻿namespace Project.Domain.Events
 {
     public class ItemOutOfStockEvent : BaseEvent<Item>
     {
