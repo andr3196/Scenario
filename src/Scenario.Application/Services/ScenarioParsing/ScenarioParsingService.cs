@@ -4,42 +4,39 @@ using System.Linq.Expressions;
 using Scenario.Domain.Modeling.Models;
 using System.Threading.Tasks;
 using System.Threading;
-using Scenario.Application.Models;
-using Scenario.Domain.Models.Scenarios;
-using Scenario.Services.ExpressionBuilding;
+using Scenario.Contracts;
 using Scenario.Domain.Shared.TypeHandling;
 using Scenario.Domain.Modeling.Services;
+using Scenario.Domain.Models;
+using Scenario.Domain.Services.ExpressionBuilding;
 
 namespace Scenario.Application.Services.ScenarioParsing
 {
     public class ScenarioParsingService : IScenarioParsingService
     {
-        private readonly IServiceProvider serviceProvider;
         private readonly IScenarioDomainService scenarioModelService;
         private readonly IConsequenceExpressionBuilder consequenceBuilder;
         private readonly IConditionExpressionBuilder conditionBuilder;
         private readonly IDomainTypeResolver domainTypeResolver;
 
         public ScenarioParsingService(
-            IServiceProvider serviceProvider,
             IScenarioDomainService scenarioModelService,
             IConsequenceExpressionBuilder consequenceBuilder,
             IConditionExpressionBuilder conditionBuilder,
             IDomainTypeResolver domainTypeResolver)
         {
-            this.serviceProvider = serviceProvider;
             this.scenarioModelService = scenarioModelService;
             this.consequenceBuilder = consequenceBuilder;
             this.conditionBuilder = conditionBuilder;
             this.domainTypeResolver = domainTypeResolver;
         }
 
-        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioDefinition? scenarioDefinition)
+        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioFlow? scenarioDefinition)
         {
             return TryParse(scenario, out scenarioDefinition, out _);
         }
 
-        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioDefinition? scenarioDefinition, out Exception? exception)
+        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioFlow? scenarioDefinition, out Exception? exception)
         {
             try
             {
@@ -55,13 +52,13 @@ namespace Scenario.Application.Services.ScenarioParsing
             }
         }
 
-        public ScenarioDefinition Parse(ScenarioDefinitionDto definitionDto)
+        public ScenarioFlow Parse(ScenarioDefinitionDto definitionDto)
         {
             var model = scenarioModelService.GetModel();
             var entityType = GetEntityType(definitionDto.Entity, model);
-            var definitionType = typeof(ScenarioDefinition<>).MakeGenericType(new Type[] { entityType });
+            var definitionType = typeof(ScenarioFlow<>).MakeGenericType(entityType);
 
-            var scenarioDefinition = (ScenarioDefinition)Activator.CreateInstance(definitionType)!;
+            var scenarioDefinition = (ScenarioFlow)Activator.CreateInstance(definitionType)!;
             scenarioDefinition.EventType = GetEventType(definitionDto.Entity, definitionDto.Event, model);
             scenarioDefinition.Key = domainTypeResolver.GenerateKey(scenarioDefinition.EventType);
 
@@ -74,8 +71,8 @@ namespace Scenario.Application.Services.ScenarioParsing
         private Func<object[], object> GetCondition(Type entityType)
         {
             var conditionMethod = typeof(IConditionExpressionBuilder).GetMethod(nameof(IConditionExpressionBuilder.BuildExpression));
-            var genericConditionMethod = conditionMethod!.MakeGenericMethod(new Type[] { entityType });
-            var expressionType = typeof(Expression<>).MakeGenericType(new Type[] { typeof(Func<,>).MakeGenericType(entityType, typeof(bool)) });
+            var genericConditionMethod = conditionMethod!.MakeGenericMethod(entityType);
+            var expressionType = typeof(Expression<>).MakeGenericType(typeof(Func<,>).MakeGenericType(entityType, typeof(bool)));
             var compileMethod = expressionType.GetMethod(nameof(LambdaExpression.Compile), Array.Empty<Type>())!;
             return arguments => compileMethod.Invoke(genericConditionMethod.Invoke(conditionBuilder, arguments), new object[] { });
         }
@@ -88,7 +85,7 @@ namespace Scenario.Application.Services.ScenarioParsing
             var compileMethod = expressionType.GetMethod(nameof(LambdaExpression.Compile), new Type[] { })!;
             return arguments => {
                 var expression = genericConditionMethod.Invoke(consequenceBuilder, arguments);
-                var func = compileMethod.Invoke(expression, new object[] { });
+                var func = compileMethod.Invoke(expression, Array.Empty<object>());
                 return func;
             };
         }

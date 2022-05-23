@@ -4,10 +4,10 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Scenario.Domain.Clauses;
 using Scenario.Domain.Modeling.Models;
+using Scenario.Domain.Models.Clauses;
+using Scenario.Domain.Services.ExpressionBuilding;
 using Scenario.Domain.Shared.TypeHandling;
-using Scenario.Services.ExpressionBuilding;
 using Scenario.Test.Services.ExpressionBuilding.Mocks;
 using Xunit;
 

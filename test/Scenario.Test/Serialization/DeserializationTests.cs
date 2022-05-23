@@ -1,8 +1,8 @@
 ﻿using System.Buffers;
 using System.Text;
 using System.Text.Json;
-using Scenario.Domain.Clauses;
-using Scenario.Domain.JsonConvertion;
+using Scenario.Domain.Models.Clauses;
+using Scenario.Domain.Serialization.JsonConvertion;
 using Xunit;
 
 namespace Scenario.Test.Serialization
@@ -45,7 +45,6 @@ namespace Scenario.Test.Serialization
             var serializer = new PredicateClauseConverter();
             var options = new JsonSerializerOptions();
             options.Converters.Add(serializer);
-            var buffer = new ArrayBufferWriter<byte>(100);
             var jsonInput = @"{
                 ""Discriminator"":""UnaryPredicateClause"",
                 ""Value"": {
@@ -73,7 +72,6 @@ namespace Scenario.Test.Serialization
             var serializer = new PredicateClauseConverter();
             var options = new JsonSerializerOptions();
             options.Converters.Add(serializer);
-            var buffer = new ArrayBufferWriter<byte>(100);
             var jsonInput = @"{
                 ""Discriminator"":""BinaryPredicateClause"",
                 ""Combinator"":""LOGICAL_AND"",

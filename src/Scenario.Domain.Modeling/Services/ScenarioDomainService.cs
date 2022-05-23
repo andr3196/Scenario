@@ -42,10 +42,13 @@ namespace Scenario.Domain.Modeling.Services
 
         public ScenarioDomainModel GetModel()
         {
-            var assembly = assemblyProvider();
+            var assemblies = assemblyProvider();
+            var assemblyTypes = assemblies.SelectMany(a => a.GetTypes())
+                .Where(t => Attribute.IsDefined(t, typeof(ScenarioEnabledAttribute))
+                 || Attribute.IsDefined(t, typeof(ScenarioConsequenceAttribute)))
+                .ToArray();
 
-            var scenarioTypes = assembly
-                .GetTypes()
+            var scenarioTypes = assemblyTypes
                 .Where(t => Attribute.IsDefined(t, typeof(ScenarioEnabledAttribute)))
                 .ToList();
 
@@ -79,8 +82,7 @@ namespace Scenario.Domain.Modeling.Services
                 e => domainTypeResolver.GenerateKey(e.EntityType),
                 e => getEventsStrategy.GetEvents(e.EntityType));
 
-            var consequences = assembly
-                .GetTypes()
+            var consequences = assemblyTypes
                 .Where(t => Attribute.IsDefined(t, typeof(ScenarioConsequenceAttribute)))
                 .Select(t => new
                 {
@@ -125,8 +127,9 @@ namespace Scenario.Domain.Modeling.Services
             var filters = serviceProvider.GetServices<IFilter>();
             var interfaceName = typeof(IFilter<,>).Name;
             return filters
+                .Where(f => f.GetType().GetInterface(interfaceName) != null)
                 .ToDictionary(
-                f => string.Join("-", f.GetType().GetInterface(interfaceName).GenericTypeArguments.Select(t => t.Name)),
+                f => string.Join("-", f.GetType().GetInterface(interfaceName)!.GenericTypeArguments.Select(t => t.Name)),
                 f => f.SupportedComparisonsKeys.Select(k => new Filter
                 {
                     Label = translationService.Translate(k),

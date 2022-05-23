@@ -5,15 +5,15 @@ using Project.Api.Persistence;
 using Project.Domain;
 using Scenario.Domain.Shared.Events;
 
-namespace Scenario.Services
+namespace Project.Api.Services
 {
     public class ProjectDataProvider
     {
-        private readonly DatabaseContext databaseContext;
+        private readonly ProjectDatabaseContext projectDatabaseContext;
 
-        public ProjectDataProvider(DatabaseContext databaseContext)
+        public ProjectDataProvider(ProjectDatabaseContext projectDatabaseContext)
         {
-            this.databaseContext = databaseContext;
+            this.projectDatabaseContext = projectDatabaseContext;
         }
 
         public object GetData<TEvent, TEntity>(TEvent @event, IEnumerable<string> includes = null)
@@ -21,7 +21,7 @@ namespace Scenario.Services
             where TEntity : class, IScenarioEntity
         {
 
-            return ApplyIncludes(databaseContext.Set<TEntity>(), includes).Single(e => e.Id == @event.EntityId);
+            return ApplyIncludes(projectDatabaseContext.Set<TEntity>(), includes).Single(e => e.Id == @event.EntityId);
         }
 
         private IQueryable<TEntity> ApplyIncludes<TEntity>(IQueryable<TEntity> source, IEnumerable<string> includes)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Scenario.Domain.Clauses;
+using Scenario.Domain.Models.Clauses;
 
-namespace Scenario.Services.ExpressionBuilding
+namespace Scenario.Domain.Services.ExpressionBuilding
 {
     public interface ICommandExpressionBuilder
     {

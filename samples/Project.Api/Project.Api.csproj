@@ -31,6 +31,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Scenario.EntityFrameworkCore\Scenario.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\..\src\Scenario\Scenario.csproj" />
     <ProjectReference Include="..\Project.Domain\Project.Domain.csproj" />
   </ItemGroup>
 </Project>

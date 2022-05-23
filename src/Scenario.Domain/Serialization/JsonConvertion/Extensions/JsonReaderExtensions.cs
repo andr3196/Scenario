@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace Scenario.Domain.JsonConvertion.Extensions
+namespace Scenario.Domain.Serialization.JsonConvertion.Extensions
 {
     public static class JsonReaderExtensions
     {

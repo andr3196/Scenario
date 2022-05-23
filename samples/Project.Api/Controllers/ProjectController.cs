@@ -14,11 +14,11 @@ namespace Project.Api.Controllers
     [Route("[controller]")]
     public class ProjectController : ControllerBase
     {
-        private readonly DatabaseContext databaseContext;
+        private readonly ProjectDatabaseContext projectDatabaseContext;
 
-        public ProjectController(DatabaseContext databaseContext)
+        public ProjectController(ProjectDatabaseContext projectDatabaseContext)
         {
-            this.databaseContext = databaseContext;
+            this.projectDatabaseContext = projectDatabaseContext;
         }
 
         [HttpPost]
@@ -27,7 +27,7 @@ namespace Project.Api.Controllers
         {
             if (type == "AccountCreated")
             {
-                var customer = databaseContext.Set<Customer>().SingleOrDefault();
+                var customer = projectDatabaseContext.Set<Customer>().SingleOrDefault();
                 if (customer == null)
                 {
                     customer = new Customer
@@ -35,25 +35,25 @@ namespace Project.Api.Controllers
                         Name = "Customer 1",
                         Password = "MySecret"
                     };
-                    databaseContext.Set<Customer>().Add(customer);
-                    databaseContext.SaveChanges();
+                    projectDatabaseContext.Set<Customer>().Add(customer);
+                    projectDatabaseContext.SaveChanges();
                 }
 
                 customer.AccountCreated();
             }
             if( type == "ItemCreated")
             {
-                var items = databaseContext.Set<Item>().ToList();
+                var items = projectDatabaseContext.Set<Item>().ToList();
                 var item = new Item
                 {
                     Price = 23,
                     Stock = 50 -  items.Count,
                     Title = "Nice item",
                 };
-                databaseContext.Set<Item>().Add(item);
+                projectDatabaseContext.Set<Item>().Add(item);
             }
             
-            databaseContext.SaveChanges();
+            projectDatabaseContext.SaveChanges();
 
             return Ok();
         }

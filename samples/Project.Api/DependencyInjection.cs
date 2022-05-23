@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Project.Api.Persistence;
+using Scenario;
+using AssemblyReference = Scenario.Domain.Modeling.Properties.AssemblyReference;
+using Scenario.EntityFrameworkCore;
 
 namespace Project.Api
 {
@@ -10,14 +12,17 @@ namespace Project.Api
     {
         public static void AddScenarioProject(this IServiceCollection services)
         {
+            services.AddScenario(builder =>
+            {
+                builder.RegisterDomainAssembly<AssemblyReference>();
+                builder.UseEntityFrameworkRepository<ProjectDatabaseConfigurationOptions>();
+            });
         }
 
         public static IApplicationBuilder UseCurrentProject(this IApplicationBuilder app)
         {
-            using (var scope = app.ApplicationServices.CreateScope())
-            {
-                EnsureDatabaseReady(scope.ServiceProvider);
-            }
+            using var scope = app.ApplicationServices.CreateScope();
+            EnsureDatabaseReady(scope.ServiceProvider);
 
             return app;
         }

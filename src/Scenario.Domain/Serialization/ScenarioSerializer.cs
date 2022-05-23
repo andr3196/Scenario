@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
-using Scenario.Domain.JsonConvertion;
+using Scenario.Domain.Serialization.JsonConvertion;
 
-namespace Scenario.Domain
+namespace Scenario.Domain.Serialization
 {
     public class ScenarioSerializer : IScenarioSerializer
     {

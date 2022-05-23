@@ -8,7 +8,7 @@ using Project.Api.Persistence;
 
 namespace Project.Api.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
+    [DbContext(typeof(ProjectDatabaseContext))]
     [Migration("20210727212920_InitialCreate")]
     partial class InitialCreate
     {

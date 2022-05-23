@@ -1,15 +1,15 @@
 ﻿using System;
-using Scenario.Application.Models;
-using Scenario.Domain.Models.Scenarios;
+using Scenario.Contracts;
+using Scenario.Domain.Models;
 
 namespace Scenario.Application.Services.ScenarioParsing
 {
     public interface IScenarioParsingService
     {
-        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioDefinition? scenarioDefinition);
+        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioFlow? scenarioDefinition);
 
-        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioDefinition? scenarioDefinition, out Exception? exception);
+        public bool TryParse(ScenarioDefinitionDto scenario, out ScenarioFlow? scenarioDefinition, out Exception? exception);
 
-        public ScenarioDefinition Parse(ScenarioDefinitionDto scenario);
+        public ScenarioFlow Parse(ScenarioDefinitionDto scenario);
     }
 }

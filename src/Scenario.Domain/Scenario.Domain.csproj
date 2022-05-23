@@ -27,12 +27,12 @@
     <Folder Include="TypeHandling\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Services\ScenarioManagement\" />
-    <Folder Include="Services\EventHandling\" />
-    <Folder Include="Models\Scenarios\" />
     <Folder Include="Services\Persistence\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Scenario.Core\Scenario.Core.csproj" />
     <ProjectReference Include="..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj" />
+    <ProjectReference Include="..\Scenario.Domain.Models\Scenario.Domain.Models.csproj" />
     <ProjectReference Include="..\Scenario.Domain.Shared\Scenario.Domain.Shared.csproj" />
   </ItemGroup>
 </Project>

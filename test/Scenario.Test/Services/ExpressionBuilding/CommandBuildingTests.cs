@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Moq;
-using Scenario.Domain.Clauses;
+using Scenario.Domain.Models.Clauses;
+using Scenario.Domain.Services.ExpressionBuilding;
 using Scenario.Domain.Shared.Contracts;
 using Scenario.Domain.Shared.TypeHandling;
-using Scenario.Services.ExpressionBuilding;
 using Scenario.Test.Services.ExpressionBuilding.Mocks;
 using Xunit;
 

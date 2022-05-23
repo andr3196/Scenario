@@ -3,7 +3,6 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Scenario.Domain.Shared.TypeHandling;
 using Scenario.Domain.TypeHandling;
-using Scenario.Services.ExpressionBuilding;
 
 namespace Scenario.Domain.Services.ExpressionBuilding
 {

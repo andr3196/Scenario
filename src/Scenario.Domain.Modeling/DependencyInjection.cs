@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Reflection.Metadata;
 using Microsoft.Extensions.DependencyInjection;
+using Scenario.Configuration;
 using Scenario.Domain.Modeling.Models.Constants;
 using Scenario.Domain.Modeling.Models.Filters;
 using Scenario.Domain.Modeling.Models.Logicals;
@@ -11,9 +12,9 @@ namespace Scenario.Domain.Modeling
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddScenarioModelling(this IServiceCollection services, Assembly domainAssembly)
+        public static IServiceCollection AddScenarioModelling(this IServiceCollection services, ScenarioConfiguration configuration)
         {
-            services.AddSingleton<AssemblyProvider>(provider => () => domainAssembly);
+            services.AddSingleton<AssemblyProvider>(_ => () => configuration.DomainAssemblies);
             services.Scan(scanner => scanner
                 .FromAssemblyOf<Properties.AssemblyReference>()
                 .AddClasses(classes => classes.AssignableTo<IScenarioService>())

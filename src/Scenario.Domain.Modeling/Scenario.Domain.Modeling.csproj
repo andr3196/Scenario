@@ -21,6 +21,7 @@
     <PackageReference Include="Scrutor" Version="3.3.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Scenario.Configuration\Scenario.Configuration.csproj" />
     <ProjectReference Include="..\Scenario.Domain.Shared\Scenario.Domain.Shared.csproj" />
   </ItemGroup>
 </Project>

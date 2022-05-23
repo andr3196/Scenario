@@ -3,8 +3,8 @@ using System.Buffers;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using Scenario.Domain.Clauses;
-using Scenario.Domain.JsonConvertion;
+using Scenario.Domain.Models.Clauses;
+using Scenario.Domain.Serialization.JsonConvertion;
 using Xunit;
 
 namespace Scenario.Test.Serialization
@@ -38,7 +38,7 @@ namespace Scenario.Test.Serialization
             serializer.Write(writer, predicate, new JsonSerializerOptions());
             writer.Flush();
 
-            var expectedOutPut = "{\"discriminator\":\"UnaryPredicateClause\",\"value\":null}";
+            const string expectedOutPut = "{\"discriminator\":\"UnaryPredicateClause\",\"value\":null}";
             var result = Encoding.Default.GetString(buffer.WrittenSpan);
             Assert.Equal(expectedOutPut, result);
         }
@@ -54,7 +54,7 @@ namespace Scenario.Test.Serialization
             serializer.Write(writer, predicate, new JsonSerializerOptions());
             writer.Flush();
 
-            var expectedOutPut = "{\"discriminator\":\"BinaryPredicateClause\",\"combinator\":\"combinator\",\"left\":null,\"right\":null}";
+            const string expectedOutPut = "{\"discriminator\":\"BinaryPredicateClause\",\"combinator\":\"combinator\",\"left\":null,\"right\":null}";
             var result = Encoding.Default.GetString(buffer.WrittenSpan);
             Assert.Equal(expectedOutPut, result);
         }

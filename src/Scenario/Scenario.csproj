@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Scenario.Api\Scenario.Api.csproj" />
     <ProjectReference Include="..\Scenario.Application\Scenario.Application.csproj" />
+    <ProjectReference Include="..\Scenario.Configuration\Scenario.Configuration.csproj" />
     <ProjectReference Include="..\Scenario.Domain\Scenario.Domain.csproj" />
   </ItemGroup>
 </Project>

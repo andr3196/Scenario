@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using Moq;
-using Scenario.Domain.Clauses;
 using Scenario.Domain.Modeling.Models.Filters;
 using Scenario.Domain.Modeling.Models.Logicals;
+using Scenario.Domain.Models.Clauses;
+using Scenario.Domain.Services.ExpressionBuilding;
 using Scenario.Domain.Shared.TypeHandling;
-using Scenario.Services.ExpressionBuilding;
 using Scenario.Test.Services.ExpressionBuilding.Mocks;
 using Scenario.Test.Services.ExpressionBuilding.Mocks.Filters;
 using Xunit;

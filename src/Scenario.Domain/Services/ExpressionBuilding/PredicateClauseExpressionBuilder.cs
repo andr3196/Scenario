@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Scenario.Domain.Clauses;
 using Scenario.Domain.Exceptions;
 using Scenario.Domain.Modeling.Models.Filters;
 using Scenario.Domain.Modeling.Models.Logicals;
+using Scenario.Domain.Models.Clauses;
 using Scenario.Domain.Shared.TypeHandling;
 
-namespace Scenario.Services.ExpressionBuilding
+namespace Scenario.Domain.Services.ExpressionBuilding
 {
     public class PredicateClauseExpressionBuilder : IPredicateClauseExpressionBuilder
     {

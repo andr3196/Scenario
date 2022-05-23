@@ -4,11 +4,11 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Scenario.Domain.Clauses;
 using Scenario.Domain.Modeling.Models;
+using Scenario.Domain.Models.Clauses;
 using Scenario.Domain.Shared.TypeHandling;
 
-namespace Scenario.Services.ExpressionBuilding
+namespace Scenario.Domain.Services.ExpressionBuilding
 {
     public class ConsequenceExpressionBuilder : IConsequenceExpressionBuilder
     {

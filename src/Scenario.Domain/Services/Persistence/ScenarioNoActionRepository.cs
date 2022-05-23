@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Scenario.Domain.Models.Scenarios;
+using Scenario.Core.Persistence;
+using Scenario.Domain.Models;
 
 namespace Scenario.Domain.Services.Persistence
 {
@@ -13,9 +14,9 @@ namespace Scenario.Domain.Services.Persistence
         {
         }
 
-        public Task<IEnumerable<ScenarioDefinition>> GetAllActiveScenarioDefinitionsAsync(CancellationToken cancellationToken)
+        public Task<IEnumerable<ScenarioFlow>> GetAllActiveScenarioDefinitionsAsync(CancellationToken cancellationToken)
         {
-            return Task.FromResult(new List<ScenarioDefinition>().AsEnumerable());
+            return Task.FromResult(new List<ScenarioFlow>().AsEnumerable());
         }
     }
 }

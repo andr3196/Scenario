@@ -2,5 +2,5 @@
 
 namespace Scenario.Domain.Modeling.Services
 {
-    public delegate Assembly AssemblyProvider();
+    public delegate Assembly[] AssemblyProvider();
 }

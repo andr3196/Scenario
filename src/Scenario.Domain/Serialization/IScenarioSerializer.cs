@@ -1,4 +1,4 @@
-﻿namespace Scenario.Domain
+﻿namespace Scenario.Domain.Serialization
 {
     public interface IScenarioSerializer
     {

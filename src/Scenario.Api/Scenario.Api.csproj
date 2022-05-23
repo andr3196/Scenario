@@ -15,9 +15,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Scenario.Application\Scenario.Application.csproj" />
-    <ProjectReference Include="..\..\Scenario.Domain.Modeling\Scenario.Domain.Modeling.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="10.0.1" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.3" />
   </ItemGroup>
 </Project>

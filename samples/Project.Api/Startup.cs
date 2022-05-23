@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Project.Api.Persistence;
 using Project.Domain.Handlers;
+using Scenario;
 
 namespace Project.Api
 {
@@ -33,7 +34,7 @@ namespace Project.Api
             {
                 //options.JsonSerializerOptions.Converters.Add(new PredicateWhereClauseConverter());
             });
-            services.AddDbContext<DatabaseContext>();
+            services.AddDbContext<ProjectDatabaseContext>();
             services.AddTransient<SendEmailHandler>();
         }
 
@@ -65,7 +66,7 @@ namespace Project.Api
             });
 
             app.UseCurrentProject();
-            
+            app.UseScenario();
         }
     }
 }
