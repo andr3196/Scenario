@@ -8,14 +8,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
 using Scenario.Api.Test.Extensions;
 using Scenario.Contracts;
 using Scenario.Contracts.Commands;
 using Scenario.Core;
 using Scenario.Domain.Models;
 using Scenario.Domain.Models.Clauses;
-using Scenario.Domain.Services.ScenarioManagement.Create;
+using Scenario.Domain.Serialization.JsonConvertion;
 using Scenario.EntityFramework.Test;
 using Scenario.EntityFrameworkCore;
 using Scenario.TestDataBuilder.Domain;
@@ -27,9 +26,10 @@ public class ScenarioApiControllerTests : IClassFixture<WebApplicationFactory<Pr
 {
     private readonly WebApplicationFactory<Project.Test.Program> factory;
 
-    private JsonSerializerOptions options = new JsonSerializerOptions
+    private readonly JsonSerializerOptions options = new JsonSerializerOptions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new PredicateClauseConverter() },
     };
 
     public ScenarioApiControllerTests(WebApplicationFactory<Project.Test.Program> factory)
@@ -115,17 +115,6 @@ public class ScenarioApiControllerTests : IClassFixture<WebApplicationFactory<Pr
     {
         using var client = factory.CreateDefaultClient();
         using var scope = factory.Services.CreateScope();
-        await using var unbuilder = await factory.Services.GetRequiredService<ScenarioDefinitionBuilder>()
-            .WithTitle("Scenario1")
-            .IsActive()
-            .WithDummyCondition()
-            .WithDummyConsequence()
-            .Repeat()
-            .WithTitle("Scenario2")
-            .IsActive(false)
-            .ExistsInDatabaseAsync(scope.ServiceProvider.GetRequiredService<DatabaseContext>());
-        var scenarios = unbuilder.Entities;
-
         var createCommand = new CreateScenarioCommand
         {
             Id = Guid.Parse("40f23887-9ab7-4e9d-9d79-459e8653c202"),
@@ -142,8 +131,46 @@ public class ScenarioApiControllerTests : IClassFixture<WebApplicationFactory<Pr
         var scenario = await source.SingleOrDefaultAsync(s => s.Id == id);
         scenario.Should().NotBeNull();
         scenario!.Title.Should().Be(createCommand.Title);
-        scenario.ConditionJson.Should().Be(JsonSerializer.Serialize(createCommand.Condition));
-        scenario.ConsequenceJson.Should().Be(JsonSerializer.Serialize(createCommand.Consequence));
+        var conditionJson = JsonSerializer.Serialize(createCommand.Condition, options);
+        scenario.ConditionJson.Should().Be(conditionJson);
+        var consequenceJson = JsonSerializer.Serialize(createCommand.Consequence, options);
+        scenario.ConsequenceJson.Should().Be(consequenceJson);
         scenario.IsActive.Should().Be(createCommand.IsActive);
+    }
+    
+    [Fact]
+    public async Task UpdateScenario_ShouldUpdateScenarioInDatabase()
+    {
+        using var client = factory.CreateDefaultClient();
+        using var scope = factory.Services.CreateScope();
+        await using var unbuilder = await factory.Services.GetRequiredService<ScenarioDefinitionBuilder>()
+            .WithTitle("Scenario1")
+            .IsActive()
+            .WithDummyCondition()
+            .WithDummyConsequence()
+            .ExistsInDatabaseAsync(scope.ServiceProvider.GetRequiredService<DatabaseContext>());
+        var scenarios = unbuilder.Entities;
+
+        var updateCommand = new UpdateScenarioCommand
+        {
+            Id = scenarios[0].Id,
+            Condition = new UnaryPredicateClause(new UnaryOperatorClause(new ValueClause("othertype", "valueType", "othervalue"),"should be null")),
+            Consequence = new ConsequenceClause("consequnce-2", new Dictionary<string, ValueClause>()),
+            Title = "Scenario2",
+            IsActive = false,
+        };
+        
+        var id = await client.PatchAsync<UpdateScenarioCommand, Guid>("/Scenario", updateCommand);
+        Assert.NotEqual(Guid.Empty, id);
+
+        var source = scope.ServiceProvider.GetRequiredService<ISource<ScenarioDefinition>>();
+        var scenario = await source.SingleOrDefaultAsync(s => s.Id == id);
+        scenario.Should().NotBeNull();
+        scenario!.Title.Should().Be(updateCommand.Title);
+        var conditionJson = JsonSerializer.Serialize(updateCommand.Condition, options);
+        scenario.ConditionJson.Should().Be(conditionJson);
+        var consequenceJson = JsonSerializer.Serialize(updateCommand.Consequence, options);
+        scenario.ConsequenceJson.Should().Be(consequenceJson);
+        scenario.IsActive.Should().Be(updateCommand.IsActive);
     }
 }

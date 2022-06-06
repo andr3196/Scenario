@@ -17,7 +17,12 @@ public class Repository<T> : IRepository<T>
         baseQueryable = dbContext.Set<T>();
         dbContext.Database.EnsureCreated();
     }
-    
+
+    public Task<int> SaveAsync(CancellationToken cancellationToken)
+    {
+        return dbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public Task<int> AddAsync(T entity, CancellationToken cancellationToken)
     {
         dbContext.Set<T>().Add(entity);

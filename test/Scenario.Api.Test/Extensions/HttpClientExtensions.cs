@@ -23,7 +23,7 @@ namespace Scenario.Api.Test.Extensions
         {
             var response = await client.GetAsync(uri, cancellationToken);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: cancellationToken);
+            return await response.Content.ReadFromJsonAsync<TResponse>(options, cancellationToken: cancellationToken);
         }
         
         public static async Task<TResponse?> PostAsync<TPayload, TResponse>(this HttpClient client, string uri, TPayload payload, CancellationToken cancellationToken = default)
@@ -32,7 +32,16 @@ namespace Scenario.Api.Test.Extensions
             var httpContent = new StringContent(stringContent, Encoding.UTF8, "application/json");
             var response = await client.PostAsync(uri, httpContent, cancellationToken);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TResponse>(cancellationToken: cancellationToken);
+            return await response.Content.ReadFromJsonAsync<TResponse>(options, cancellationToken: cancellationToken);
+        }
+        
+        public static async Task<TResponse?> PatchAsync<TPayload, TResponse>(this HttpClient client, string uri, TPayload payload, CancellationToken cancellationToken = default)
+        {
+            var stringContent = JsonSerializer.Serialize(payload, options);
+            var httpContent = new StringContent(stringContent, Encoding.UTF8, "application/json");
+            var response = await client.PatchAsync(uri, httpContent, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<TResponse>(options, cancellationToken: cancellationToken);
         }
     }
 }
