@@ -14,7 +14,6 @@
     <None Remove="Microsoft.Extensions.Hosting" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Mapping" />
     <Folder Include="Services\" />
     <Folder Include="Services\Hosting\" />
     <Folder Include="Services\ScenarioParsing\" />
