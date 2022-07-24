@@ -26,7 +26,9 @@ public class UpdateScenarioCommandHandler : IUpdateScenarioCommandHandler
         var scenario = await scenarios.SingleOrDefaultAsync(s => s.Id == request.Id, cancellationToken) ??
                        throw new ScenarioNotFoundException(); 
         mapper.Map(request, scenario);
-        await scenarios.SaveAsync(cancellationToken);
+        //scenario.Title = "Test title";
+        //scenario.IsActive = false;
+        await scenarios.UpdateAsync(scenario, cancellationToken);
         return scenario.Id;
     }
 }
