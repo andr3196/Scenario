@@ -23,6 +23,12 @@ public class Repository<T> : IRepository<T>
         return dbContext.SaveChangesAsync(cancellationToken);
     }
 
+    public Task<int> UpdateAsync(T entity, CancellationToken cancellationToken)
+    {
+        dbContext.Set<T>().Attach(entity);
+        return SaveAsync(cancellationToken);
+    }
+
     public Task<int> AddAsync(T entity, CancellationToken cancellationToken)
     {
         dbContext.Set<T>().Add(entity);
