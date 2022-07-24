@@ -1,21 +1,27 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Project.Domain;
+using Project.Domain.EventHandlers;
+using Scenario.Domain.Shared.Events;
 
 namespace Project.Api.Persistence
 {
     public class ProjectDatabaseContext : DbContext
     {
-        
-        public ProjectDatabaseContext()
+        private readonly IServiceProvider serviceProvider;
+
+        public ProjectDatabaseContext(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-            => options.UseSqlite(@"Data Source=example-project2.db");
+            => options.UseSqlite(@"Data Source=example-project3.db");
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,7 +53,7 @@ namespace Project.Api.Persistence
 
         }
 
-        public override int SaveChanges()
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
             ChangeTracker.DetectChanges();
 
@@ -67,37 +73,37 @@ namespace Project.Api.Persistence
                     e.State != EntityState.Detached)
                 .Select(e => e.Entity);
 
-            var result = base.SaveChanges();
-
-            HandleEventsAsync(entitiesWithEvents).GetAwaiter().GetResult();
+            var transaction = await base.Database.BeginTransactionAsync(cancellationToken);
+            var result = await base.SaveChangesAsync(cancellationToken);
             try
             {
-                
+                await HandleEventsAsync(entitiesWithEvents, cancellationToken);
+                await transaction.CommitAsync(cancellationToken);
             }
             catch
             {
-                base.Database.RollbackTransaction();
+                await transaction.RollbackAsync(cancellationToken);
             }
 
             return result;
         }
 
-        private async Task HandleEventsAsync(System.Collections.Generic.IEnumerable<Entity> entitiesWithEvents)
+        private async Task HandleEventsAsync(System.Collections.Generic.IEnumerable<Entity> entitiesWithEvents, CancellationToken cancellationToken)
         {
-            MethodInfo propagateMethod = null; //typeof(IScenarioEventPropagator).GetMethod(nameof(IScenarioEventPropagator.PropagateAsync));
-            
-            var entityEvents = entitiesWithEvents
+            var entities = entitiesWithEvents.ToList();
+           var entityEvents = entities
                     .SelectMany(e => e.Events)
                     .ToList();
             foreach (var @event in entityEvents)
             {
-                var eventType = @event.GetType();
-                var entityType = eventType.BaseType.GetGenericArguments().First();
-                var genericMethod = propagateMethod.MakeGenericMethod(eventType, entityType);
-                //await (Task)genericMethod.Invoke(scenarioEventPropagator, new[] { @event });
+                var handlers = serviceProvider.GetServices(typeof(IEventHandler<>).MakeGenericType(@event.GetType())).Cast<IEventHandler<IDomainEvent>>();
+                foreach (var handler in handlers)
+                {
+                    await handler.HandleAsync(@event, cancellationToken);
+                }
+                
             }
-
-            entitiesWithEvents.ToList().ForEach(e => e.ResetEvents());
+            entities.ToList().ForEach(e => e.ResetEvents());
         }
     }
 }
