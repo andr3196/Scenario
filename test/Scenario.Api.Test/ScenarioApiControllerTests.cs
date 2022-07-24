@@ -143,12 +143,13 @@ public class ScenarioApiControllerTests : IClassFixture<WebApplicationFactory<Pr
     {
         using var client = factory.CreateDefaultClient();
         using var scope = factory.Services.CreateScope();
+        using var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
         await using var unbuilder = await factory.Services.GetRequiredService<ScenarioDefinitionBuilder>()
             .WithTitle("Scenario1")
             .IsActive()
             .WithDummyCondition()
             .WithDummyConsequence()
-            .ExistsInDatabaseAsync(scope.ServiceProvider.GetRequiredService<DatabaseContext>());
+            .ExistsInDatabaseAsync(dbContext);
         var scenarios = unbuilder.Entities;
 
         var updateCommand = new UpdateScenarioCommand
@@ -163,8 +164,7 @@ public class ScenarioApiControllerTests : IClassFixture<WebApplicationFactory<Pr
         var id = await client.PatchAsync<UpdateScenarioCommand, Guid>("/Scenario", updateCommand);
         Assert.NotEqual(Guid.Empty, id);
 
-        var source = scope.ServiceProvider.GetRequiredService<ISource<ScenarioDefinition>>();
-        var scenario = await source.SingleOrDefaultAsync(s => s.Id == id);
+        var scenario = await dbContext.Set<ScenarioDefinition>().SingleOrDefaultAsync(s => s.Id == id);
         scenario.Should().NotBeNull();
         scenario!.Title.Should().Be(updateCommand.Title);
         var conditionJson = JsonSerializer.Serialize(updateCommand.Condition, options);

@@ -15,6 +15,7 @@ public static class ScenarioExtensions
         builder.UsePersistenceRepository<ScenarioRepository>(services =>
         {
             services.AddScoped<IConfigureOptions<DatabaseContextConfiguration>, TDatabaseConfigurationOptions>()
+                .AddScoped<IConfigureOptions<DatabaseContextConfiguration>, ScenarioDatabaseConfigurationOptions>()
                 .AddTransient(typeof(IRepository<>), typeof(Repository<>))
                 .AddTransient(typeof(ISource<>), typeof(Source<>))
                 .AddPersistenceModel()

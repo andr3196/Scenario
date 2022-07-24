@@ -47,7 +47,7 @@ namespace Scenario.Events
                     .Select(s => new
                     {
                         Scenario = s,
-                        Data = @event.Entity
+                        Data = @event.Entity,
                     })
                     .Where(x => x.Scenario.InvokeCondition(x.Data))
                     .Select(async x => await x.Scenario.InvokeConsequence(x.Data, cancellationToken))
