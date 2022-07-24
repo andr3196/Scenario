@@ -13,6 +13,7 @@ public class UpdateCommandMapper : Profile
                 definition => definition.ConditionJson,
                 opts => opts.MapFrom<PredicateClauseConditionValueResolver>())
             .ForMember(definition => definition.ConsequenceJson,
-                opts => opts.MapFrom<ConsequenceClauseValueResolver>());
+                opts => opts.MapFrom<ConsequenceClauseValueResolver>())
+            .ForMember(c => c.Id, opts => opts.Ignore());
     }
 }
