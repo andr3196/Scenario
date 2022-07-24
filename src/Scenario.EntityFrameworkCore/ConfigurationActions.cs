@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Scenario.EntityFrameworkCore;
 
-public class ConfigurationActions
+public static class ConfigurationActions
 {
     public static void EnsureDatabaseCreated(IApplicationBuilder app)
     {
