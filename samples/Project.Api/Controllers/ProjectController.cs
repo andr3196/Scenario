@@ -23,7 +23,7 @@ namespace Project.Api.Controllers
 
         [HttpPost]
         [Route("raise/{type}")]
-        public IActionResult Raise(string type, CancellationToken cancellationToken)
+        public async Task<IActionResult> Raise(string type, CancellationToken cancellationToken)
         {
             if (type == "AccountCreated")
             {
@@ -36,7 +36,7 @@ namespace Project.Api.Controllers
                         Password = "MySecret"
                     };
                     projectDatabaseContext.Set<Customer>().Add(customer);
-                    projectDatabaseContext.SaveChanges();
+                    await projectDatabaseContext.SaveChangesAsync(cancellationToken);
                 }
 
                 customer.AccountCreated();
@@ -53,7 +53,7 @@ namespace Project.Api.Controllers
                 projectDatabaseContext.Set<Item>().Add(item);
             }
             
-            projectDatabaseContext.SaveChanges();
+            await projectDatabaseContext.SaveChangesAsync(cancellationToken);
 
             return Ok();
         }

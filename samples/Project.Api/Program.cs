@@ -7,6 +7,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Project.Api;
 using Project.Api.Persistence;
+using Project.Api.Services;
+using Project.Domain.EventHandlers;
 using Project.Domain.Handlers;
 using Scenario;
 
@@ -35,6 +37,7 @@ void ConfigureServices(IServiceCollection services)
     });
 
     services.AddScenarioProject();
+    services.AddScoped(typeof(IEventHandler<>), typeof(ScenarioEventHandler<>));
 
     services.AddControllers()
         .AddJsonOptions(options =>
@@ -53,6 +56,9 @@ void ConfigureMiddleware(IApplicationBuilder appBuilder, IWebHostEnvironment env
         appBuilder.UseSwagger();
         appBuilder.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Scenario v1"));
     }
+
+    using var scope = appBuilder.ApplicationServices.CreateScope();
+    scope.ServiceProvider.GetRequiredService<ProjectDatabaseContext>().Database.EnsureCreated();
 
     appBuilder.UseHttpsRedirection();
 
