@@ -4,34 +4,35 @@ namespace Scenario.EntityFrameworkCore;
 
 public class DatabaseContextConfiguration
 {
-    private Action<DbContextOptionsBuilder>? ConfigureContextOptionsBuilder { get; set; } 
-    
-    private Action<ModelBuilder>? ConfigureModelBuilder { get; set; } 
+    private List<Action<DbContextOptionsBuilder>> ConfigureContextOptionsBuilders { get; set; } =
+        new List<Action<DbContextOptionsBuilder>>();
+
+    private List<Action<ModelBuilder>> ConfigureModelBuilders { get; } = new();
     
     public void ConfigureOptions(Action<DbContextOptionsBuilder> configureBuilder)
     {
-        ConfigureContextOptionsBuilder = configureBuilder;
+        ConfigureContextOptionsBuilders.Add(configureBuilder);
     }
     
     public void ConfigureModel(Action<ModelBuilder> configureBuilder)
     {
-        ConfigureModelBuilder = configureBuilder;
+        ConfigureModelBuilders.Add(configureBuilder);
     }
     
     public void Apply(DbContextOptionsBuilder builder)
     {
-        if (ConfigureContextOptionsBuilder == null)
+        if (!ConfigureContextOptionsBuilders.Any())
         {
             throw new InvalidOperationException(
                 "The DatabaseContextConfiguration has not been configured yet. Call Configure.");
         }
 
-        ConfigureContextOptionsBuilder.Invoke(builder);
+        ConfigureContextOptionsBuilders.ForEach(configureBuilder => configureBuilder(builder));
     }
     
     public void Apply(ModelBuilder modelBuilder)
     {
-        ConfigureModelBuilder?.Invoke(modelBuilder);
+        ConfigureModelBuilders.ForEach(configureAction => configureAction(modelBuilder));
     }
     
 }
